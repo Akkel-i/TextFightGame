@@ -57,6 +57,7 @@ class bowman:
     def __init__(self, name, team):
         self.name = name
         self.team = team # käytetään deploy kohdassa, R ja G
+        self.position = ""
         self.character_hp = random.randint(6, 10)
         self.character_mp = random.randint(0, 0)
         if self.team == "RB":
@@ -79,6 +80,7 @@ class swordman:
     def __init__(self, name, team ):
         self.name = name
         self.team = team # käytetään deploy kohdassa, R ja G
+        self.position = ""
         self.character_hp = random.randint(8, 15)
         self.character_mp = random.randint(0, 0)
         if self.team == "RS":
@@ -108,6 +110,10 @@ def deploy_character():
                 cell = random.randint(1, 6)
                 if the_world[row][cell] == "--":
                     the_world[row][cell] = x
+                    #if x == "RS":
+                     #   f"swordman_{x}".position = the_world[row][cell]
+                    #if x == "RB":
+                    #    f"bowman_{x}".position = the_world[row][cell]
                     break
         if x[0] == "G":
             while True:
@@ -115,6 +121,10 @@ def deploy_character():
                 cell = random.randint(1, 6)
                 if the_world[row][cell] == "--":
                     the_world[row][cell] = x
+                    if x == "GS":
+                        f"swordman_{x}".position = the_world[row][cell]
+                    else:
+                        f"bowman_{x}".position = the_world[row][cell]
                     break        
     for x in g_team_character_list:
         if x[0] == "R":
@@ -123,6 +133,10 @@ def deploy_character():
                 cell = random.randint(1, 6)
                 if the_world[row][cell] == "--":
                     the_world[row][cell] = x
+                    if x == "RB":
+                        f"swordman_{x}".position = the_world[row][cell]
+                    else:
+                        f"bowman_{x}".position = the_world[row][cell]
                     break
         if x[0] == "G":
             while True:
@@ -130,11 +144,32 @@ def deploy_character():
                 cell = random.randint(1, 6)
                 if the_world[row][cell] == "--":
                     the_world[row][cell] = x
+                    #if x == "GB":
+                    #    f"swordman_{x}".position = the_world[row][cell]
+                    #else:
+                    #    f"bowman_{x}".position = the_world[row][cell]
                     break
+    
 
 def movement():
-    pass
-
+    player_movement_input = input("Choose where to move: ")
+    # nuolet joka suuntaan näppäimillä: Q W E D C X Z A
+    if player_movement_input == "Q":
+        pass
+    if player_movement_input == "W":
+        pass
+    if player_movement_input == "E":
+        pass
+    if player_movement_input == "D":
+        pass        
+    if player_movement_input == "C":
+        pass
+    if player_movement_input == "X":
+        pass
+    if player_movement_input == "Z":
+        pass
+    if player_movement_input == "A":
+        pass
 
 
 def game_loop():
@@ -150,15 +185,16 @@ def game_loop():
 
 def testi():
     UKKELI = swordman("pena", "YS")
-    swordman_RS = swordman("RS_upseeri", "RS")
-    swordman_GS = swordman("GS_kikkeli", "GS")
+    #swordman_RS = swordman("RS_upseeri", "RS")
+    #swordman_GS = swordman("GS_kikkeli", "GS")
     #print(UKKELI.id)
     #print(swordman_RS.id)
     #print(swordman_RS.name)
         #for x in character_list:
     #    print(x)
-    print(swordman_RS.character_hp)
-    print(swordman_GS.character_hp)
+    #print(swordman_RS.character_hp)
+    #print(swordman_GS.character_hp)
+    #print(swordman_RS.position)
 
 
 if __name__ == '__main__':
@@ -172,3 +208,8 @@ if __name__ == '__main__':
     printing_the_world()
     #game_loop()
     #print(character_list)
+    print(swordman_RS.position)
+
+
+# position lisäys pitää lisätä ja bugit siitä pois. Miksei viimeinen  print(swordman_RS.position) toimi,
+#sanoo ettei oo defined, eli ei osaa ottaa sitä vaikka luotu aikasemmin, miksei
