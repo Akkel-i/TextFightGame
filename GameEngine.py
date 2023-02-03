@@ -13,10 +13,10 @@ the_world = [
     ]
 
 # muuta jokkoe listat sanakirjaksi missä avain on nimi? ja siitä sitten jaotellaan ja ylläpidetään
-r_team_character_list = []
-g_team_character_list = []
-r_team_win = False
-g_team_win = False
+r_id_character_list = [] # red team
+g_id_character_list = [] # green team
+r_id_win = False
+g_id_win = False
 turn_counter = 1
 random_counter = 0 
 
@@ -39,31 +39,44 @@ def making_obstacles():
     howManyObstacle = 5
     i = 0
     while i < howManyObstacle:
-        random_row = random.randint(2, 5)
-        random_cell = random.randint(1, 6)
-        if the_world[random_row][random_cell] == "--":
-            the_world[random_row][random_cell] = "XX"
-        else:         
+        while True:
             random_row = random.randint(2, 5)
             random_cell = random.randint(1, 6)
-        if the_world[random_row][random_cell] == "--":
-            the_world[random_row][random_cell] = "XX"
+            if the_world[random_row][random_cell] == "--":
+                the_world[random_row][random_cell] = "XX"
+                break
         i += 1
 
 
 
 class bowman:
     character_movement = 1
-    def __init__(self, name, team):
+    def __init__(self, name, id):
         self.name = name
-        self.team = team # käytetään deploy kohdassa, R ja G
+        self.id = id # käytetään deploy kohdassa, R ja G
         self.position = ""
         self.character_hp = random.randint(6, 10)
         self.character_mp = random.randint(0, 0)
-        if self.team == "RB":
-            r_team_character_list.append(self.team)
-        elif self.team == "GB":
-            g_team_character_list.append(self.team)
+        if self.id == "RB":
+            r_id_character_list.append(self.id)
+        elif self.id == "GB":
+            g_id_character_list.append(self.id)
+        if id[0] == "R":
+            while True:
+                row = random.randint(0, 1)
+                cell = random.randint(1, 6)
+                if the_world[row][cell] == "--":
+                    the_world[row][cell] = id
+                    self.position = (row, cell)
+                    break        
+        if id[0] == "G":
+            while True:
+                row = random.randint(6, 7)
+                cell = random.randint(1, 6)
+                if the_world[row][cell] == "--":
+                    the_world[row][cell] = id
+                    self.position = (row, cell)
+                    break        
     def melee_attack(self):
         #katso joku ruutu ja tee siihen dmg
         self.character_melee_dmg = random.randint(1, 1)
@@ -77,16 +90,35 @@ class bowman:
 class swordman:
     character_movement = 1
     # kutsu tätä XX = swordman(xx, .., xx)
-    def __init__(self, name, team ):
+    def __init__(self, name, id ):
         self.name = name
-        self.team = team # käytetään deploy kohdassa, R ja G
+        self.id = id # käytetään deploy kohdassa, R ja G
         self.position = ""
         self.character_hp = random.randint(8, 15)
         self.character_mp = random.randint(0, 0)
-        if self.team == "RS":
-            r_team_character_list.append(self.team)
-        elif self.team == "GS":
-            g_team_character_list.append(self.team)        
+        if self.id == "RS":
+            r_id_character_list.append(self.id)
+        elif self.id == "GS":
+            g_id_character_list.append(self.id)  
+        if id[0] == "R":
+            while True:
+                row = random.randint(0, 1)
+                cell = random.randint(1, 6)
+                if the_world[row][cell] == "--":
+                    the_world[row][cell] = id
+                    self.position = (row, cell)
+                    break        
+        if id[0] == "G":
+            while True:
+                row = random.randint(6, 7)
+                cell = random.randint(1, 6)
+                if the_world[row][cell] == "--":
+                    the_world[row][cell] = id
+                    self.position = (row, cell)
+                    break  
+        print(self.position)
+        print(self.position[0])
+        print(self.position[1])
     def melee_attack(self):
         #katso joku ruutu ja tee siihen dmg
         self.character_melee_dmg = random.randint(1, 5)
@@ -103,7 +135,7 @@ def create_characters():
 # funktio mikä sijoittaa ukkelit kartalle riippuen kumpi joukkoe
 def deploy_character():
     # R joukkoe ylös, G joukkoe alas
-    for x in r_team_character_list:
+    for x in r_id_character_list:
         if x[0] == "R":
             while True:
                 row = random.randint(0, 1)
@@ -126,7 +158,7 @@ def deploy_character():
                     else:
                         f"bowman_{x}".position = the_world[row][cell]
                     break        
-    for x in g_team_character_list:
+    for x in g_id_character_list:
         if x[0] == "R":
             while True:
                 row = random.randint(0, 1)
@@ -150,30 +182,40 @@ def deploy_character():
                     #    f"bowman_{x}".position = the_world[row][cell]
                     break
     
-
+# tähän pitää saada character.TIETO jostain, eli miten saan vuorossa olevan hahmon sisään?
 def movement():
     player_movement_input = input("Choose where to move: ")
+    row = character.position[0]
+    cell = character.position[1]
     # nuolet joka suuntaan näppäimillä: Q W E D C X Z A
-    if player_movement_input == "Q":
+    if player_movement_input.upper() == "Q":
+        if the_world[row-1][cell-1] == "--":
+            #do it eli saa liikkua
+            the_world[row-1][cell-1] = character.id
+            character.position = (row-1, cell-1)
+            pass
+        #character.position = character.position[]
         pass
-    if player_movement_input == "W":
+    if player_movement_input.upper() == "W":
         pass
-    if player_movement_input == "E":
+    if player_movement_input.upper() == "E":
         pass
-    if player_movement_input == "D":
+    if player_movement_input.upper() == "D":
         pass        
-    if player_movement_input == "C":
+    if player_movement_input.upper() == "C":
         pass
-    if player_movement_input == "X":
+    if player_movement_input.upper() == "X":
         pass
-    if player_movement_input == "Z":
+    if player_movement_input.upper() == "Z":
         pass
-    if player_movement_input == "A":
+    if player_movement_input.upper() == "A":
         pass
-
+    else:
+        print("Illegal move, please try again")
+        # loop to beginning
 
 def game_loop():
-    while r_team_win == False and g_team_win == False:
+    while r_id_win == False and g_id_win == False:
         printing_the_world()
         if turn_counter % 1 == 0:
             # ekan tiimin vuoro
@@ -204,11 +246,11 @@ if __name__ == '__main__':
     #create_swordman_RS()
     #testi()
     create_characters()
-    deploy_character()
+    #deploy_character()
     printing_the_world()
     #game_loop()
     #print(character_list)
-    print(swordman_RS.position)
+    #print(swordman_RS.position)
 
 
 # position lisäys pitää lisätä ja bugit siitä pois. Miksei viimeinen  print(swordman_RS.position) toimi,
