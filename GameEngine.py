@@ -15,6 +15,7 @@ the_world = [
 # muuta jokkoe listat sanakirjaksi missä avain on nimi? ja siitä sitten jaotellaan ja ylläpidetään
 r_id_character_list = [] # red team
 g_id_character_list = [] # green team
+all_character_list = []
 r_id_win = False
 g_id_win = False
 turn_counter = 1
@@ -61,6 +62,7 @@ class bowman:
             r_id_character_list.append(self.id)
         elif self.id == "GB":
             g_id_character_list.append(self.id)
+        all_character_list.append(self.id)
         if id[0] == "R":
             while True:
                 row = random.randint(0, 1)
@@ -100,6 +102,7 @@ class swordman:
             r_id_character_list.append(self.id)
         elif self.id == "GS":
             g_id_character_list.append(self.id)  
+        all_character_list.append(self.id)
         if id[0] == "R":
             while True:
                 row = random.randint(0, 1)
@@ -127,12 +130,12 @@ class swordman:
 
 
 def create_characters():
-    swordman_RS = swordman("RS_upseeri", "RS")
-    swordman_GS = swordman("GS_miekka", "GS")
-    bowman_RB = bowman("RB_haltija", "RB")
-    bowman_GB = bowman("GB_jouska", "GB")
+    swordman_RS = swordman("swordman", "RS")
+    swordman_GS = swordman("swordman", "GS")
+    bowman_RB = bowman("bowman", "RB")
+    bowman_GB = bowman("bowman", "GB")
 
-# funktio mikä sijoittaa ukkelit kartalle riippuen kumpi joukkoe
+# funktio mikä sijoittaa ukkelit kartalle riippuen kumpi joukkoe. Tällä hetkellä deploy on classissa jo mukana
 def deploy_character():
     # R joukkoe ylös, G joukkoe alas
     for x in r_id_character_list:
@@ -183,10 +186,14 @@ def deploy_character():
                     break
     
 # tähän pitää saada character.TIETO jostain, eli miten saan vuorossa olevan hahmon sisään?
-def movement():
+def movement(hahmo):
+    move_counter = 0
+    how_many_character = len(all_character_list)
+    character_to_move = all_character_list[move_counter]
+    hahmo.position = the_world[1][1]
     player_movement_input = input("Choose where to move: ")
-    row = character.position[0]
-    cell = character.position[1]
+    #row = character.position[0]
+    #cell = character.position[1]
     # nuolet joka suuntaan näppäimillä: Q W E D C X Z A
     if player_movement_input.upper() == "Q":
         if the_world[row-1][cell-1] == "--":
@@ -226,7 +233,7 @@ def game_loop():
 
 
 def testi():
-    UKKELI = swordman("pena", "YS")
+    pass
     #swordman_RS = swordman("RS_upseeri", "RS")
     #swordman_GS = swordman("GS_kikkeli", "GS")
     #print(UKKELI.id)
@@ -245,12 +252,15 @@ if __name__ == '__main__':
     #create_swordman_SS()
     #create_swordman_RS()
     #testi()
-    create_characters()
+    #create_characters()
     #deploy_character()
     printing_the_world()
+    swordman_RS = swordman("swordman", "RS") 
+    movement(swordman_RS) # näin se toimii :D
     #game_loop()
     #print(character_list)
     #print(swordman_RS.position)
+    print(all_character_list)
 
 
 # position lisäys pitää lisätä ja bugit siitä pois. Miksei viimeinen  print(swordman_RS.position) toimi,
