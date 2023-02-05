@@ -18,7 +18,7 @@ g_id_character_list = [] # green team
 all_character_list = []
 r_id_win = False
 g_id_win = False
-turn_counter = 1
+#turn_counter = 1
 random_counter = 0 
 
 
@@ -62,7 +62,7 @@ class bowman:
             r_id_character_list.append(self.id)
         elif self.id == "GB":
             g_id_character_list.append(self.id)
-        all_character_list.append(self.id)
+        all_character_list.append(f"{self.name}_{self.id}")
         if id[0] == "R":
             while True:
                 row = random.randint(0, 1)
@@ -102,7 +102,7 @@ class swordman:
             r_id_character_list.append(self.id)
         elif self.id == "GS":
             g_id_character_list.append(self.id)  
-        all_character_list.append(self.id)
+        all_character_list.append(f"{self.name}_{self.id}")
         if id[0] == "R":
             while True:
                 row = random.randint(0, 1)
@@ -187,20 +187,17 @@ def deploy_character():
     
 # tähän pitää saada character.TIETO jostain, eli miten saan vuorossa olevan hahmon sisään?
 def movement(hahmo):
-    move_counter = 0
-    how_many_character = len(all_character_list)
-    character_to_move = all_character_list[move_counter]
-    hahmo.position = the_world[1][1]
+    current_position_row = hahmo.position[0]
+    current_position_column = hahmo.position[1]
+
     player_movement_input = input("Choose where to move: ")
-    #row = character.position[0]
-    #cell = character.position[1]
     # nuolet joka suuntaan näppäimillä: Q W E D C X Z A
     if player_movement_input.upper() == "Q":
-        if the_world[row-1][cell-1] == "--":
+        if the_world[current_position_row-1][current_position_column-1] == "--":
             #do it eli saa liikkua
-            the_world[row-1][cell-1] = character.id
-            character.position = (row-1, cell-1)
-            pass
+            the_world[current_position_row-1][current_position_column-1] = hahmo.id
+            hahmo.position = (current_position_row-1, current_position_column-1)
+            #pass
         #character.position = character.position[]
         pass
     if player_movement_input.upper() == "W":
@@ -222,18 +219,24 @@ def movement(hahmo):
         # loop to beginning
 
 def game_loop():
+    turn_counter = 1
+    swordman_RS = swordman("swordman", "RS")
+    swordman_GS = swordman("swordman", "GS")
+    bowman_RB = bowman("bowman", "RB")
+    bowman_GB = bowman("bowman", "GB")
     while r_id_win == False and g_id_win == False:
         printing_the_world()
         if turn_counter % 1 == 0:
             # ekan tiimin vuoro
-            pass
+            movement(all_character_list[turn_counter])
+            turn_counter += 1
+            #pass
         if turn_counter % 1 == 1:
             #tokan tiimin vuoro
             pass
 
 
 def testi():
-    pass
     #swordman_RS = swordman("RS_upseeri", "RS")
     #swordman_GS = swordman("GS_kikkeli", "GS")
     #print(UKKELI.id)
@@ -244,23 +247,49 @@ def testi():
     #print(swordman_RS.character_hp)
     #print(swordman_GS.character_hp)
     #print(swordman_RS.position)
+    pass
+kaikki_hahmot = []
+turn_counter = 0
+swordman_RS = swordman("swordman", "RS")
+kaikki_hahmot.append(swordman_RS)
+swordman_GS = swordman("swordman", "GS")
+kaikki_hahmot.append(swordman_GS)
+bowman_RB = bowman("bowman", "RB")
+kaikki_hahmot.append(bowman_RB)
+bowman_GB = bowman("bowman", "GB")
+kaikki_hahmot.append(bowman_GB)
+
+print(all_character_list)
+print(all_character_list[turn_counter])
+while r_id_win == False and g_id_win == False:
+    printing_the_world()
+    if turn_counter % 1 == 0:
+        # ekan tiimin vuoro
+        seuraava_hahmo_likkua = all_character_list[turn_counter]
+        movement(kaikki_hahmot[turn_counter]) # miksei toimi
+        #movement(seuraava_hahmo_likkua) # miksei toimi
+        movement(swordman_RS) # miks toimii
+        turn_counter += 1
+        #pass
+    if turn_counter % 1 == 1:
+        #tokan tiimin vuoro
+        pass
 
 
 if __name__ == '__main__':
     #printing_the_world()
-    making_obstacles()
+    #making_obstacles() # tää toimii
     #create_swordman_SS()
     #create_swordman_RS()
     #testi()
     #create_characters()
     #deploy_character()
-    printing_the_world()
-    swordman_RS = swordman("swordman", "RS") 
-    movement(swordman_RS) # näin se toimii :D
-    #game_loop()
+    #printing_the_world()
+    #game_loop() # tää toimii
     #print(character_list)
     #print(swordman_RS.position)
-    print(all_character_list)
+    #print(all_character_list)
+    pass
 
 
 # position lisäys pitää lisätä ja bugit siitä pois. Miksei viimeinen  print(swordman_RS.position) toimi,
