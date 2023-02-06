@@ -18,8 +18,8 @@ g_id_character_list = [] # green team
 all_character_list = []
 r_id_win = False
 g_id_win = False
-#turn_counter = 1
-random_counter = 0 
+turn_counter = 1
+
 
 
 
@@ -36,8 +36,9 @@ def printing_the_world():
                     loopCounter = 0
 
  # Tekee muuttujan verran esteitä theWorld:iin   
-def making_obstacles():
-    howManyObstacle = 5
+def making_obstacles(amount):
+    if amount < 10 and amount > 1:
+        howManyObstacle = amount
     i = 0
     while i < howManyObstacle:
         while True:
@@ -62,7 +63,7 @@ class bowman:
             r_id_character_list.append(self.id)
         elif self.id == "GB":
             g_id_character_list.append(self.id)
-        all_character_list.append(f"{self.name}_{self.id}")
+        #all_character_list.append(f"{self.name}_{self.id}") ei toimi tolla muuttujalla .name + .id
         if id[0] == "R":
             while True:
                 row = random.randint(0, 1)
@@ -102,7 +103,7 @@ class swordman:
             r_id_character_list.append(self.id)
         elif self.id == "GS":
             g_id_character_list.append(self.id)  
-        all_character_list.append(f"{self.name}_{self.id}")
+        #all_character_list.append(f"{self.name}_{self.id}") ei toimi tolla muuttujalla .name + .id
         if id[0] == "R":
             while True:
                 row = random.randint(0, 1)
@@ -119,9 +120,6 @@ class swordman:
                     the_world[row][cell] = id
                     self.position = (row, cell)
                     break  
-        print(self.position)
-        print(self.position[0])
-        print(self.position[1])
     def melee_attack(self):
         #katso joku ruutu ja tee siihen dmg
         self.character_melee_dmg = random.randint(1, 5)
@@ -192,31 +190,131 @@ def movement(hahmo):
 
     player_movement_input = input("Choose where to move: ")
     # nuolet joka suuntaan näppäimillä: Q W E D C X Z A
+    # pitää vielä chekata ettei mene kentän yli tai ali
     if player_movement_input.upper() == "Q":
         if the_world[current_position_row-1][current_position_column-1] == "--":
             #do it eli saa liikkua
             the_world[current_position_row-1][current_position_column-1] = hahmo.id
             hahmo.position = (current_position_row-1, current_position_column-1)
-            #pass
-        #character.position = character.position[]
-        pass
+            the_world[current_position_row][current_position_column] = "--"
+
     if player_movement_input.upper() == "W":
-        pass
+        if the_world[current_position_row-1][current_position_column] == "--":
+            the_world[current_position_row-1][current_position_column] = hahmo.id
+            hahmo.position = (current_position_row-1, current_position_column)
+            the_world[current_position_row][current_position_column] = "--"
+
     if player_movement_input.upper() == "E":
-        pass
+        if the_world[current_position_row-1][current_position_column+1] == "--":
+            the_world[current_position_row-1][current_position_column+1] = hahmo.id
+            hahmo.position = (current_position_row-1, current_position_column+1)
+            the_world[current_position_row][current_position_column] = "--"
+
     if player_movement_input.upper() == "D":
-        pass        
+        if the_world[current_position_row][current_position_column+1] == "--":
+            the_world[current_position_row][current_position_column+1] = hahmo.id
+            hahmo.position = (current_position_row, current_position_column+1)
+            the_world[current_position_row][current_position_column] = "--"
+      
     if player_movement_input.upper() == "C":
-        pass
+        if the_world[current_position_row-1][current_position_column+1] == "--":
+            the_world[current_position_row-1][current_position_column+1] = hahmo.id
+            hahmo.position = (current_position_row-1, current_position_column+1)
+            the_world[current_position_row][current_position_column] = "--"
+
     if player_movement_input.upper() == "X":
-        pass
+        if the_world[current_position_row-1][current_position_column] == "--":
+            the_world[current_position_row-1][current_position_column] = hahmo.id
+            hahmo.position = (current_position_row-1, current_position_column)
+            the_world[current_position_row][current_position_column] = "--"
+
     if player_movement_input.upper() == "Z":
-        pass
+        if the_world[current_position_row-1][current_position_column-1] == "--":
+            the_world[current_position_row-1][current_position_column-1] = hahmo.id
+            hahmo.position = (current_position_row-1, current_position_column-1)
+            the_world[current_position_row][current_position_column] = "--"
+
     if player_movement_input.upper() == "A":
-        pass
+        if the_world[current_position_row][current_position_column-1] == "--":
+            the_world[current_position_row][current_position_column-1] = hahmo.id
+            hahmo.position = (current_position_row, current_position_column-1)
+            the_world[current_position_row][current_position_column] = "--"
+
     else:
         print("Illegal move, please try again")
         # loop to beginning
+
+def computer_move(hahmo):
+    current_position_row = hahmo.position[0]
+    current_position_column = hahmo.position[1]
+    movement_options_computer = ["Z", "X", "C"]
+
+    computer_movement_input = random.choice(movement_options_computer)
+
+    print(computer_movement_input)
+    # nuolet joka suuntaan näppäimillä: Q W E D C X Z A
+    # pitää vielä chekata ettei mene kentän yli tai ali
+    if computer_movement_input == "Q":
+        if the_world[current_position_row-1][current_position_column-1] == "--":
+            the_world[current_position_row-1][current_position_column-1] = hahmo.id
+            hahmo.position = (current_position_row-1, current_position_column-1)
+            the_world[current_position_row][current_position_column] = "--"
+            print("tietokone liikkui : Q")
+
+    if computer_movement_input == "W":
+        if the_world[current_position_row-1][current_position_column] == "--":
+            the_world[current_position_row-1][current_position_column] = hahmo.id
+            hahmo.position = (current_position_row-1, current_position_column)
+            the_world[current_position_row][current_position_column] = "--"
+            print("tietokone liikkui : W")
+
+    if computer_movement_input == "E":
+        if the_world[current_position_row-1][current_position_column+1] == "--":
+            the_world[current_position_row-1][current_position_column+1] = hahmo.id
+            hahmo.position = (current_position_row-1, current_position_column+1)
+            the_world[current_position_row][current_position_column] = "--"
+            print("tietokone liikkui : E")
+
+    if computer_movement_input == "D":
+        if the_world[current_position_row][current_position_column+1] == "--":
+            the_world[current_position_row][current_position_column+1] = hahmo.id
+            hahmo.position = (current_position_row, current_position_column+1)
+            the_world[current_position_row][current_position_column] = "--"
+            print("tietokone liikkui : D")
+      
+    if computer_movement_input == "C":
+        if the_world[current_position_row-1][current_position_column+1] == "--":
+            the_world[current_position_row-1][current_position_column+1] = hahmo.id
+            hahmo.position = (current_position_row-1, current_position_column+1)
+            the_world[current_position_row][current_position_column] = "--"
+            print("tietokone liikkui : C")
+
+    if computer_movement_input == "X":
+        if the_world[current_position_row-1][current_position_column] == "--":
+            the_world[current_position_row-1][current_position_column] = hahmo.id
+            hahmo.position = (current_position_row-1, current_position_column)
+            the_world[current_position_row][current_position_column] = "--"
+            print("tietokone liikkui : X")
+
+    if computer_movement_input == "Z":
+        if the_world[current_position_row-1][current_position_column-1] == "--":
+            the_world[current_position_row-1][current_position_column-1] = hahmo.id
+            hahmo.position = (current_position_row-1, current_position_column-1)
+            the_world[current_position_row][current_position_column] = "--"
+            print("tietokone liikkui : Z")
+
+    if computer_movement_input == "A":
+        if the_world[current_position_row][current_position_column-1] == "--":
+            the_world[current_position_row][current_position_column-1] = hahmo.id
+            hahmo.position = (current_position_row, current_position_column-1)
+            the_world[current_position_row][current_position_column] = "--"
+            print("tietokone liikkui : A")
+
+    else:
+        print("Illegal move, please try again")
+        # loop to beginning
+
+
 
 def game_loop():
     turn_counter = 1
@@ -248,8 +346,11 @@ def testi():
     #print(swordman_GS.character_hp)
     #print(swordman_RS.position)
     pass
+
+making_obstacles(6)
 kaikki_hahmot = []
 turn_counter = 0
+character_turn_counter = 0
 swordman_RS = swordman("swordman", "RS")
 kaikki_hahmot.append(swordman_RS)
 swordman_GS = swordman("swordman", "GS")
@@ -259,21 +360,28 @@ kaikki_hahmot.append(bowman_RB)
 bowman_GB = bowman("bowman", "GB")
 kaikki_hahmot.append(bowman_GB)
 
-print(all_character_list)
-print(all_character_list[turn_counter])
 while r_id_win == False and g_id_win == False:
     printing_the_world()
-    if turn_counter % 1 == 0:
+    print(turn_counter)
+    if turn_counter % 2 == 1:
         # ekan tiimin vuoro
-        seuraava_hahmo_likkua = all_character_list[turn_counter]
-        movement(kaikki_hahmot[turn_counter]) # miksei toimi
-        #movement(seuraava_hahmo_likkua) # miksei toimi
-        movement(swordman_RS) # miks toimii
+        print(f"Next character to move: {kaikki_hahmot[character_turn_counter].id}")
+        movement(kaikki_hahmot[character_turn_counter]) 
+
         turn_counter += 1
-        #pass
-    if turn_counter % 1 == 1:
-        #tokan tiimin vuoro
-        pass
+        character_turn_counter += 1
+        if character_turn_counter > 3:
+            character_turn_counter = 0
+
+    if turn_counter % 2 == 0:
+        print(f"Tietokone koittaa liikuttaa: {kaikki_hahmot[character_turn_counter].id}")
+        computer_move(kaikki_hahmot[character_turn_counter])
+
+        turn_counter += 1
+        character_turn_counter += 1
+        if character_turn_counter > 3:
+            character_turn_counter = 0
+
 
 
 if __name__ == '__main__':
