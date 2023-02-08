@@ -122,9 +122,33 @@ class swordman:
                     break  
     def melee_attack(self):
         #katso joku ruutu ja tee siihen dmg
-        self.character_melee_dmg = random.randint(1, 5)
+        self.character_melee_dmg = random.randint(2, 5)
         print("hello my name is " + self.name)
 
+def enemy_melee_attack(enemy_hahmo, player_hahmo_id):
+    print(f"{enemy_hahmo.name} is preparing for an attack ")
+    player_character_to_get_hit = ""
+    position_in_list = 0
+    osuma_listalta = 0
+
+    #while position_in_list < len(kaikki_hahmot):
+    #    if player_hahmo_id in kaikki_hahmot[position_in_list]:
+    #       player_character_to_get_hit = kaikki_hahmot[position_in_list]
+    #       break
+    #    position_in_list += 1 
+
+    for character in kaikki_hahmot:
+        if player_hahmo_id in character.id:
+            player_character_to_get_hit = kaikki_hahmot[position_in_list]
+            osuma_listalta = position_in_list
+            print(f"saa osuman: {player_character_to_get_hit}")
+            break
+        position_in_list += 1
+    print(f"pelaajan hahmon hp: {kaikki_hahmot[osuma_listalta].character_hp}")
+    kaikki_hahmot[osuma_listalta].character_hp -= random.randint(2, 5)
+    print(f"pelaajan hahmon hp: {kaikki_hahmot[osuma_listalta].character_hp}")
+    #JEE TOIMII, vähentää pelaajan hp :D
+    
 
 
 def create_characters():
@@ -272,12 +296,20 @@ def computer_attack_check(hahmo):
     # tähän saa loopin mikä chekkaa onko mikään ympäröivistä vihollinen . TOIMII muuten paitsi jos ukkeli on 0 tai 7 rivillä nii käy koko loopin läpi
     while check_beginning_row <= limiter_row and has_attacked == False:
         while check_beginning_column <= limiter_column:
-            if the_world[check_beginning_row][check_beginning_column] == "GS" or the_world[check_beginning_row][check_beginning_column] == "GB":
+            if the_world[check_beginning_row][check_beginning_column] == "GS":
                 #if yes,do damage
+                player_character_to_take_damage = "GS"
+                enemy_melee_attack(hahmo, player_character_to_take_damage)
                 has_attacked = True
                 print("AI hyökkäsi ihmisen kimppuun!")
                 break
-                #pass
+            if the_world[check_beginning_row][check_beginning_column] == "GB":
+                #if yes,do damage
+                player_character_to_take_damage = "GB"
+                enemy_melee_attack(hahmo, player_character_to_take_damage)
+                has_attacked = True
+                print("AI hyökkäsi ihmisen kimppuun!")
+                break
             print(f"{check_beginning_row}, {check_beginning_column}")
             check_beginning_column += 1   
         check_beginning_row += 1
@@ -297,6 +329,7 @@ def computer_move(hahmo):
     # pitää vielä chekata ettei mene kentän yli tai ali
 
     computer_attacked_this_turn = computer_attack_check(hahmo) # tähän hyökkäys chekki ennenkun liikkuu
+    print(f"Has computer attacked this turn? {computer_attacked_this_turn}")
 
     if computer_attacked_this_turn == False:
         if computer_movement_input == "Q":
@@ -393,7 +426,7 @@ def testi():
     #print(swordman_RS.position)
     pass
 
-making_obstacles(6)
+making_obstacles(2)
 kaikki_hahmot = []
 turn_counter = 0
 character_turn_counter = 0
@@ -413,6 +446,7 @@ while r_id_win == False and g_id_win == False:
         # ekan tiimin vuoro
         print(f"Next character to move: {kaikki_hahmot[character_turn_counter].id}")
         movement(kaikki_hahmot[character_turn_counter]) 
+        print("\n")
 
         turn_counter += 1
         character_turn_counter += 1
@@ -422,6 +456,7 @@ while r_id_win == False and g_id_win == False:
     if turn_counter % 2 == 0:
         print(f"Tietokone koittaa liikuttaa: {kaikki_hahmot[character_turn_counter].id}")
         computer_move(kaikki_hahmot[character_turn_counter])
+        print("\n")
 
         turn_counter += 1
         character_turn_counter += 1
