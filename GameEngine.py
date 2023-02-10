@@ -84,7 +84,7 @@ class bowman:
         #katso joku ruutu ja tee siihen dmg
         self.character_melee_dmg = random.randint(1, 1)
         print("hello my name is " + self.name)
-    def mranged_attack(self):
+    def ranged_attack(self):
         #katso joku ruutu ja tee siihen dmg
         self.character_range_dmg = random.randint(1, 5)
         print("hello my name is " + self.name)
@@ -130,25 +130,102 @@ def enemy_melee_attack(enemy_hahmo, player_hahmo_id):
     player_character_to_get_hit = ""
     position_in_list = 0
     osuma_listalta = 0
-
-    #while position_in_list < len(kaikki_hahmot):
-    #    if player_hahmo_id in kaikki_hahmot[position_in_list]:
-    #       player_character_to_get_hit = kaikki_hahmot[position_in_list]
-    #       break
-    #    position_in_list += 1 
+    hit_chance_list = [1, 2, 3, 4, 5]
+    hit_chance = random.choice(hit_chance_list)
 
     for character in kaikki_hahmot:
         if player_hahmo_id in character.id:
             player_character_to_get_hit = kaikki_hahmot[position_in_list]
             osuma_listalta = position_in_list
-            print(f"saa osuman: {player_character_to_get_hit}")
+            print(f"tulee osumaan: {player_character_to_get_hit.id}")
             break
         position_in_list += 1
-    print(f"pelaajan hahmon hp: {kaikki_hahmot[osuma_listalta].character_hp}")
-    kaikki_hahmot[osuma_listalta].character_hp -= random.randint(2, 5)
-    print(f"pelaajan hahmon hp: {kaikki_hahmot[osuma_listalta].character_hp}")
-    #JEE TOIMII, vähentää pelaajan hp :D
+    if enemy_hahmo.id == "RS":
+        if hit_chance == 1:
+            print(f"So close, but {player_character_to_get_hit.id} dodges gracefully")
+        if hit_chance != 1:
+            print(f"pelaajan hahmon hp ennen: {kaikki_hahmot[osuma_listalta].character_hp}")
+            kaikki_hahmot[osuma_listalta].character_hp -= random.randint(2, 5)
+            print(f"pelaajan hahmon hp jälkeen: {kaikki_hahmot[osuma_listalta].character_hp}")
+    if enemy_hahmo.id == "RB":
+        if hit_chance == 1:
+            print(f"So close, but {player_character_to_get_hit.id} dodges gracefully")
+        if hit_chance != 1:
+            print(f"pelaajan hahmon hp ennen: {kaikki_hahmot[osuma_listalta].character_hp}")
+            kaikki_hahmot[osuma_listalta].character_hp -= random.randint(1, 1)
+            print(f"pelaajan hahmon hp jälkeen: {kaikki_hahmot[osuma_listalta].character_hp}")
+    #JEE TOIMII, vähentää pelaajan hp :D ja 20% dodge chance tällähetkellä
+
+def player_melee_attack(player_hahmo_og, enemy_hahmo_id):
+    print(f"{player_hahmo_og.id} is preparing for an attack ")
+    enemy_character_to_get_hit = ""
+    position_in_list = 0
+    osuma_listalta = 0
+    hit_chance_list = [1, 2, 3, 4, 5]
+    hit_chance = random.choice(hit_chance_list)
+
+    for character in kaikki_hahmot:
+        if enemy_hahmo_id in character.id:
+            enemy_character_to_get_hit = kaikki_hahmot[position_in_list]
+            osuma_listalta = position_in_list
+            break
+        position_in_list += 1
+    # swordman tekee 2-5dmg ja bowman 1-1dmg
+    if player_hahmo_og.id == "GS":
+        if hit_chance == 1:
+            print(f"So close, but {enemy_character_to_get_hit.id} dodges by fubbling to the ground face first")
+        if hit_chance != 1:
+            print(f"tietokoneen hahmon hp ennen: {kaikki_hahmot[osuma_listalta].character_hp}")
+            kaikki_hahmot[osuma_listalta].character_hp -= random.randint(2, 5)
+            print(f"tietokoneen hahmon hp jälkeen: {kaikki_hahmot[osuma_listalta].character_hp}")
+    if player_hahmo_og.id == "GB":
+        if hit_chance == 1:
+            print(f"So close, but {enemy_character_to_get_hit.id} dodges by fumbling to the ground face first")
+        if hit_chance != 1:
+            print(f"tietokoneen hahmon hp ennen: {kaikki_hahmot[osuma_listalta].character_hp}")
+            kaikki_hahmot[osuma_listalta].character_hp -= random.randint(1, 1)
+            print(f"tietokoneen hahmon hp jälkeen: {kaikki_hahmot[osuma_listalta].character_hp}")
+
+def player_ranged_attack(player_hahmo_og):
+    enemy_character_to_get_hit = ""
+    position_in_list = 0
+    osuma_listalta = 0
+    hit_chance_list = [1, 2, 3, 4, 5]
+    hit_chance = random.choice(hit_chance_list)
     
+    while True:
+        enemy_to_take_damage_input = input("Choose an enemy to shoot an arrow: ")
+        if enemy_to_take_damage_input.upper() == "RS":
+            for character in kaikki_hahmot:
+                if enemy_to_take_damage_input in character.id:
+                    enemy_character_to_get_hit = kaikki_hahmot[position_in_list]
+                    osuma_listalta = position_in_list
+                    break
+                position_in_list += 1  
+            if hit_chance == 1 or hit_chance == 2:
+                print(f"The arrow flies, but {kaikki_hahmot[osuma_listalta].id} uses afterimage")
+            else:
+                print(f"tietokoneen hahmon hp ennen: {kaikki_hahmot[osuma_listalta].character_hp}")
+                kaikki_hahmot[osuma_listalta].character_hp -= random.randint(1, 5)
+                print(f"tietokoneen hahmon hp jälkeen: {kaikki_hahmot[osuma_listalta].character_hp}")
+            break
+        if enemy_to_take_damage_input.upper() == "RB":
+            for character in kaikki_hahmot:
+                if enemy_to_take_damage_input in character.id:
+                    enemy_character_to_get_hit = kaikki_hahmot[position_in_list]
+                    osuma_listalta = position_in_list
+                    break
+                position_in_list += 1  
+            if hit_chance == 1 or hit_chance == 2:
+                print(f"The arrow flies, but {kaikki_hahmot[osuma_listalta].id} uses afterimage")
+            else:
+                print(f"tietokoneen hahmon hp ennen: {kaikki_hahmot[osuma_listalta].character_hp}")
+                kaikki_hahmot[osuma_listalta].character_hp -= random.randint(1, 5)
+                print(f"tietokoneen hahmon hp jälkeen: {kaikki_hahmot[osuma_listalta].character_hp}")
+            break
+        else:
+            print("Beep Try again!")
+
 
 
 def create_characters():
@@ -207,66 +284,181 @@ def deploy_character():
                     #    f"bowman_{x}".position = the_world[row][cell]
                     break
     
-# tähän pitää saada character.TIETO jostain, eli miten saan vuorossa olevan hahmon sisään?
+
 def movement(hahmo):
     current_position_row = hahmo.position[0]
     current_position_column = hahmo.position[1]
 
-    player_movement_input = input("Choose where to move: ")
     # nuolet joka suuntaan näppäimillä: Q W E D C X Z A
-    # pitää vielä chekata ettei mene kentän yli tai ali
-    if player_movement_input.upper() == "Q":
-        if the_world[current_position_row-1][current_position_column-1] == "--":
-            #do it eli saa liikkua
-            the_world[current_position_row-1][current_position_column-1] = hahmo.id
-            hahmo.position = (current_position_row-1, current_position_column-1)
-            the_world[current_position_row][current_position_column] = "--"
+    # pitää vielä chekata ettei mene kentän yli tai ali tai ei ole XX
+    while True:
+        player_movement_input = input("Choose where to move: ")
+        if player_movement_input.upper() == "B":
+            if hahmo.id == "GB":
+                player_ranged_attack(hahmo)
+                break 
+            else:
+                print("You don't have a bow!")
+                continue
+        if player_movement_input.upper() == "Q":
+            if the_world[current_position_row-1][current_position_column-1] == "RS":
+                enemy_character_to_take_damage = "RS"
+                player_melee_attack(hahmo, enemy_character_to_take_damage)
+                break
+            if the_world[current_position_row-1][current_position_column-1] == "RB":
+                enemy_character_to_take_damage = "RB"
+                player_melee_attack(hahmo, enemy_character_to_take_damage)
+                break
+            if the_world[current_position_row-1][current_position_column-1] == "--":
+                #do it eli saa liikkua
+                the_world[current_position_row-1][current_position_column-1] = hahmo.id
+                hahmo.position = (current_position_row-1, current_position_column-1)
+                the_world[current_position_row][current_position_column] = "--"
+                break
+            if the_world[current_position_row-1][current_position_column-1] == "XX":
+                print(f"Illegal move, please try again")
+            if the_world[current_position_row-1][current_position_column-1] == "GS" or the_world[current_position_row-1][current_position_column-1] == "GB":
+                print("You hug your teammate and continue")
 
-    if player_movement_input.upper() == "W":
-        if the_world[current_position_row-1][current_position_column] == "--":
-            the_world[current_position_row-1][current_position_column] = hahmo.id
-            hahmo.position = (current_position_row-1, current_position_column)
-            the_world[current_position_row][current_position_column] = "--"
+                
 
-    if player_movement_input.upper() == "E":
-        if the_world[current_position_row-1][current_position_column+1] == "--":
-            the_world[current_position_row-1][current_position_column+1] = hahmo.id
-            hahmo.position = (current_position_row-1, current_position_column+1)
-            the_world[current_position_row][current_position_column] = "--"
+        if player_movement_input.upper() == "W":
+            if the_world[current_position_row-1][current_position_column] == "RS":
+                enemy_character_to_take_damage = "RS"
+                player_melee_attack(hahmo, enemy_character_to_take_damage)
+                break
+            if the_world[current_position_row-1][current_position_column] == "RB":
+                enemy_character_to_take_damage = "RB"
+                player_melee_attack(hahmo, enemy_character_to_take_damage)
+                break
+            if the_world[current_position_row-1][current_position_column] == "--":
+                the_world[current_position_row-1][current_position_column] = hahmo.id
+                hahmo.position = (current_position_row-1, current_position_column)
+                the_world[current_position_row][current_position_column] = "--"
+                break
+            if the_world[current_position_row-1][current_position_column] == "XX":
+                print(f"Illegal move, please try again")
+            if the_world[current_position_row-1][current_position_column] == "GS" or the_world[current_position_row-1][current_position_column] == "GB":
+                print("You hug your teammate and continue")
 
-    if player_movement_input.upper() == "D":
-        if the_world[current_position_row][current_position_column+1] == "--":
-            the_world[current_position_row][current_position_column+1] = hahmo.id
-            hahmo.position = (current_position_row, current_position_column+1)
-            the_world[current_position_row][current_position_column] = "--"
+        if player_movement_input.upper() == "E":
+            if the_world[current_position_row-1][current_position_column+1] == "RS":
+                enemy_character_to_take_damage = "RS"
+                player_melee_attack(hahmo, enemy_character_to_take_damage)
+                break
+            if the_world[current_position_row-1][current_position_column+1] == "RB":
+                enemy_character_to_take_damage = "RB"
+                player_melee_attack(hahmo, enemy_character_to_take_damage)
+                break
+            if the_world[current_position_row-1][current_position_column+1] == "--":
+                the_world[current_position_row-1][current_position_column+1] = hahmo.id
+                hahmo.position = (current_position_row-1, current_position_column+1)
+                the_world[current_position_row][current_position_column] = "--"
+                break
+            if the_world[current_position_row-1][current_position_column+1] == "XX":
+                print(f"Illegal move, please try again")
+            if the_world[current_position_row-1][current_position_column+1] == "GS" or the_world[current_position_row-1][current_position_column+1] == "GB":
+                print("You hug your teammate and continue")
+
+        if player_movement_input.upper() == "D":
+            if the_world[current_position_row][current_position_column+1] == "RS":
+                enemy_character_to_take_damage = "RS"
+                player_melee_attack(hahmo, enemy_character_to_take_damage)
+                break
+            if the_world[current_position_row][current_position_column+1] == "RB":
+                enemy_character_to_take_damage = "RB"
+                player_melee_attack(hahmo, enemy_character_to_take_damage)
+                break
+            if the_world[current_position_row][current_position_column+1] == "--":
+                the_world[current_position_row][current_position_column+1] = hahmo.id
+                hahmo.position = (current_position_row, current_position_column+1)
+                the_world[current_position_row][current_position_column] = "--"
+                break
+            if the_world[current_position_row][current_position_column+1] == "XX":
+                print(f"Illegal move, please try again")
+            if the_world[current_position_row][current_position_column+1] == "GS" or the_world[current_position_row][current_position_column+1] == "GB":
+                print("You hug your teammate and continue")
       
-    if player_movement_input.upper() == "C":
-        if the_world[current_position_row+1][current_position_column+1] == "--":
-            the_world[current_position_row+1][current_position_column+1] = hahmo.id
-            hahmo.position = (current_position_row+1, current_position_column+1)
-            the_world[current_position_row][current_position_column] = "--"
+        if player_movement_input.upper() == "C":
+            if the_world[current_position_row+1][current_position_column+1] == "RS":
+                enemy_character_to_take_damage = "RS"
+                player_melee_attack(hahmo, enemy_character_to_take_damage)
+                break
+            if the_world[current_position_row+1][current_position_column+1] == "RB":
+                enemy_character_to_take_damage = "RB"
+                player_melee_attack(hahmo, enemy_character_to_take_damage)
+                break
+            if the_world[current_position_row+1][current_position_column+1] == "--":
+                the_world[current_position_row+1][current_position_column+1] = hahmo.id
+                hahmo.position = (current_position_row+1, current_position_column+1)
+                the_world[current_position_row][current_position_column] = "--"
+                break
+            if the_world[current_position_row+1][current_position_column+1] == "XX":
+                print(f"Illegal move, please try again")
+            if the_world[current_position_row+1][current_position_column+1] == "GS" or the_world[current_position_row+1][current_position_column+1] == "GB":
+                print("You hug your teammate and continue")
 
-    if player_movement_input.upper() == "X":
-        if the_world[current_position_row+1][current_position_column] == "--":
-            the_world[current_position_row+1][current_position_column] = hahmo.id
-            hahmo.position = (current_position_row+1, current_position_column)
-            the_world[current_position_row][current_position_column] = "--"
+        if player_movement_input.upper() == "X":
+            if the_world[current_position_row+1][current_position_column] == "RS":
+                enemy_character_to_take_damage = "RS"
+                player_melee_attack(hahmo, enemy_character_to_take_damage)
+                break
+            if the_world[current_position_row+1][current_position_column] == "RB":
+                enemy_character_to_take_damage = "RB"
+                player_melee_attack(hahmo, enemy_character_to_take_damage)
+                break
+            if the_world[current_position_row+1][current_position_column] == "--":
+                the_world[current_position_row+1][current_position_column] = hahmo.id
+                hahmo.position = (current_position_row+1, current_position_column)
+                the_world[current_position_row][current_position_column] = "--"
+                break
+            if the_world[current_position_row+1][current_position_column] == "XX":
+                print(f"Illegal move, please try again")
+            if the_world[current_position_row+1][current_position_column] == "GS" or the_world[current_position_row+1][current_position_column] == "GB":
+                print("You hug your teammate and continue")
 
-    if player_movement_input.upper() == "Z":
-        if the_world[current_position_row+1][current_position_column-1] == "--":
-            the_world[current_position_row+1][current_position_column-1] = hahmo.id
-            hahmo.position = (current_position_row+1, current_position_column-1)
-            the_world[current_position_row][current_position_column] = "--"
+        if player_movement_input.upper() == "Z":
+            if the_world[current_position_row+1][current_position_column-1] == "RS":
+                enemy_character_to_take_damage = "RS"
+                player_melee_attack(hahmo, enemy_character_to_take_damage)
+                break
+            if the_world[current_position_row+1][current_position_column-1] == "RB":
+                enemy_character_to_take_damage = "RB"
+                player_melee_attack(hahmo, enemy_character_to_take_damage)
+                break
+            if the_world[current_position_row+1][current_position_column-1] == "--":
+                the_world[current_position_row+1][current_position_column-1] = hahmo.id
+                hahmo.position = (current_position_row+1, current_position_column-1)
+                the_world[current_position_row][current_position_column] = "--"
+                break
+            if the_world[current_position_row+1][current_position_column-1] == "XX":
+                print(f"Illegal move, please try again")
+            if the_world[current_position_row+1][current_position_column-1] == "GS" or the_world[current_position_row+1][current_position_column-1] == "GB":
+                print("You hug your teammate and continue")
 
-    if player_movement_input.upper() == "A":
-        if the_world[current_position_row][current_position_column-1] == "--":
-            the_world[current_position_row][current_position_column-1] = hahmo.id
-            hahmo.position = (current_position_row, current_position_column-1)
-            the_world[current_position_row][current_position_column] = "--"
+        if player_movement_input.upper() == "A":
+            if the_world[current_position_row][current_position_column-1] == "RS":
+                enemy_character_to_take_damage = "RS"
+                player_melee_attack(hahmo, enemy_character_to_take_damage)
+                break
+            if the_world[current_position_row][current_position_column-1] == "RB":
+                enemy_character_to_take_damage = "RB"
+                player_melee_attack(hahmo, enemy_character_to_take_damage)
+                break
+            if the_world[current_position_row][current_position_column-1] == "--":
+                the_world[current_position_row][current_position_column-1] = hahmo.id
+                hahmo.position = (current_position_row, current_position_column-1)
+                the_world[current_position_row][current_position_column] = "--"
+                break
+            if the_world[current_position_row][current_position_column-1] == "XX":
+                print(f"Illegal move, please try again")
+            if the_world[current_position_row][current_position_column-1] == "GS" or the_world[current_position_row][current_position_column-1] == "GB":
+                print("You hug your teammate and continue")
 
-    #else:
-        #print("Illegal move, please try again")
-        # loop to beginning
+        if player_movement_input.upper() == "S":
+            print("You highfive yourself and continue")
+
+
 
 # chekki jos jokin ympäröivä ruutu on vihollinen
 def computer_attack_check(hahmo):
@@ -323,8 +515,8 @@ def computer_move(hahmo):
     current_position_column = hahmo.position[1]
     movement_options_computer = ["Z", "X", "C"]
 
-    computer_movement_input = random.choice(movement_options_computer)
-    print(computer_movement_input)
+
+    #print(computer_movement_input)
     # nuolet joka suuntaan näppäimillä: Q W E D C X Z A
     # pitää vielä chekata ettei mene kentän yli tai ali
 
@@ -332,66 +524,106 @@ def computer_move(hahmo):
     print(f"Has computer attacked this turn? {computer_attacked_this_turn}")
 
     if computer_attacked_this_turn == False:
-        if computer_movement_input == "Q":
-            if the_world[current_position_row-1][current_position_column-1] == "--":
-                the_world[current_position_row-1][current_position_column-1] = hahmo.id
-                hahmo.position = (current_position_row-1, current_position_column-1)
-                the_world[current_position_row][current_position_column] = "--"
-                print("tietokone liikkui : Q")
+        while True:
+            computer_movement_input = random.choice(movement_options_computer)
+            if computer_movement_input == "Q":
+                if the_world[current_position_row-1][current_position_column-1] == "--":
+                    the_world[current_position_row-1][current_position_column-1] = hahmo.id
+                    hahmo.position = (current_position_row-1, current_position_column-1)
+                    the_world[current_position_row][current_position_column] = "--"
+                    print("tietokone liikkui : Q")
+                    break
+                if the_world[current_position_row-1][current_position_column-1] == "XX":
+                    print(f"Computer runs to a tree, my oh my")
+                if the_world[current_position_row-1][current_position_column-1] == "RS" or the_world[current_position_row-1][current_position_column-1] == "RB":
+                    print("AI slaps it's teammate and continues")
 
-        if computer_movement_input == "W":
-            if the_world[current_position_row-1][current_position_column] == "--":
-                the_world[current_position_row-1][current_position_column] = hahmo.id
-                hahmo.position = (current_position_row-1, current_position_column)
-                the_world[current_position_row][current_position_column] = "--"
-                print("tietokone liikkui : W")
+            if computer_movement_input == "W":
+                if the_world[current_position_row-1][current_position_column] == "--":
+                    the_world[current_position_row-1][current_position_column] = hahmo.id
+                    hahmo.position = (current_position_row-1, current_position_column)
+                    the_world[current_position_row][current_position_column] = "--"
+                    print("tietokone liikkui : W")
+                    break
+                if the_world[current_position_row-1][current_position_column] == "XX":
+                    print(f"Computer runs to a tree, my oh my")
+                if the_world[current_position_row-1][current_position_column] == "RS" or the_world[current_position_row-1][current_position_column] == "RB":
+                    print("AI slaps it's teammate and continues")
 
-        if computer_movement_input == "E":
-            if the_world[current_position_row-1][current_position_column+1] == "--":
-                the_world[current_position_row-1][current_position_column+1] = hahmo.id
-                hahmo.position = (current_position_row-1, current_position_column+1)
-                the_world[current_position_row][current_position_column] = "--"
-                print("tietokone liikkui : E")
+            if computer_movement_input == "E":
+                if the_world[current_position_row-1][current_position_column+1] == "--":
+                    the_world[current_position_row-1][current_position_column+1] = hahmo.id
+                    hahmo.position = (current_position_row-1, current_position_column+1)
+                    the_world[current_position_row][current_position_column] = "--"
+                    print("tietokone liikkui : E")
+                    break
+                if the_world[current_position_row-1][current_position_column+1] == "XX":
+                    print(f"Computer runs to a tree, my oh my")
+                if the_world[current_position_row-1][current_position_column+1] == "RS" or the_world[current_position_row-1][current_position_column+1] == "RB":
+                    print("AI slaps it's teammate and continues")
 
-        if computer_movement_input == "D":
-            if the_world[current_position_row][current_position_column+1] == "--":
-                the_world[current_position_row][current_position_column+1] = hahmo.id
-                hahmo.position = (current_position_row, current_position_column+1)
-                the_world[current_position_row][current_position_column] = "--"
-                print("tietokone liikkui : D")
+            if computer_movement_input == "D":
+                if the_world[current_position_row][current_position_column+1] == "--":
+                    the_world[current_position_row][current_position_column+1] = hahmo.id
+                    hahmo.position = (current_position_row, current_position_column+1)
+                    the_world[current_position_row][current_position_column] = "--"
+                    print("tietokone liikkui : D")
+                    break
+                if the_world[current_position_row][current_position_column+1] == "XX":
+                    print(f"Computer runs to a tree, my oh my")
+                if the_world[current_position_row][current_position_column+1] == "RS" or the_world[current_position_row][current_position_column+1] == "RB":
+                    print("AI slaps it's teammate and continues")
       
-        if computer_movement_input == "C":
-            if the_world[current_position_row+1][current_position_column+1] == "--":
-                the_world[current_position_row+1][current_position_column+1] = hahmo.id
-                hahmo.position = (current_position_row+1, current_position_column+1)
-                the_world[current_position_row][current_position_column] = "--"
-                print("tietokone liikkui : C")
+            if computer_movement_input == "C":
+                if the_world[current_position_row+1][current_position_column+1] == "--":
+                    the_world[current_position_row+1][current_position_column+1] = hahmo.id
+                    hahmo.position = (current_position_row+1, current_position_column+1)
+                    the_world[current_position_row][current_position_column] = "--"
+                    print("tietokone liikkui : C")
+                    break
+                if the_world[current_position_row+1][current_position_column+1] == "XX":
+                    print(f"Computer runs to a tree, my oh my")
+                if the_world[current_position_row+1][current_position_column+1] == "RS" or the_world[current_position_row+1][current_position_column+1] == "RB":
+                    print("AI slaps it's teammate and continues")
 
-        if computer_movement_input == "X":
-            if the_world[current_position_row+1][current_position_column] == "--":
-                the_world[current_position_row+1][current_position_column] = hahmo.id
-                hahmo.position = (current_position_row+1, current_position_column)
-                the_world[current_position_row][current_position_column] = "--"
-                print("tietokone liikkui : X")
+            if computer_movement_input == "X":
+                if the_world[current_position_row+1][current_position_column] == "--":
+                    the_world[current_position_row+1][current_position_column] = hahmo.id
+                    hahmo.position = (current_position_row+1, current_position_column)
+                    the_world[current_position_row][current_position_column] = "--"
+                    print("tietokone liikkui : X")
+                    break
+                if the_world[current_position_row+1][current_position_column] == "XX":
+                    print(f"Computer runs to a tree, my oh my")
+                if the_world[current_position_row+1][current_position_column] == "RS" or the_world[current_position_row+1][current_position_column] == "RB":
+                    print("AI slaps it's teammate and continues")
 
-        if computer_movement_input == "Z":
-            if the_world[current_position_row+1][current_position_column-1] == "--":
-                the_world[current_position_row+1][current_position_column-1] = hahmo.id
-                hahmo.position = (current_position_row+1, current_position_column-1)
-                the_world[current_position_row][current_position_column] = "--"
-                print("tietokone liikkui : Z")
+            if computer_movement_input == "Z":
+                if the_world[current_position_row+1][current_position_column-1] == "--":
+                    the_world[current_position_row+1][current_position_column-1] = hahmo.id
+                    hahmo.position = (current_position_row+1, current_position_column-1)
+                    the_world[current_position_row][current_position_column] = "--"
+                    print("tietokone liikkui : Z")
+                    break
+                if the_world[current_position_row+1][current_position_column-1] == "XX":
+                    print(f"Computer runs to a tree, my oh my")
+                if the_world[current_position_row+1][current_position_column-1] == "RS" or the_world[current_position_row+1][current_position_column-1] == "RB":
+                    print("AI slaps it's teammate and continues")
 
-        if computer_movement_input == "A":
-            if the_world[current_position_row][current_position_column-1] == "--":
-                the_world[current_position_row][current_position_column-1] = hahmo.id
-                hahmo.position = (current_position_row, current_position_column-1)
-                the_world[current_position_row][current_position_column] = "--"
-                print("tietokone liikkui : A")
+            if computer_movement_input == "A":
+                if the_world[current_position_row][current_position_column-1] == "--":
+                    the_world[current_position_row][current_position_column-1] = hahmo.id
+                    hahmo.position = (current_position_row, current_position_column-1)
+                    the_world[current_position_row][current_position_column] = "--"
+                    print("tietokone liikkui : A")
+                    break
+                if the_world[current_position_row][current_position_column-1] == "XX":
+                    print(f"Computer runs to a tree, my oh my")
+                if the_world[current_position_row][current_position_column-1] == "RS" or the_world[current_position_row][current_position_column-1] == "RB":
+                    print("AI slaps it's teammate and continues")
     if computer_attacked_this_turn == True:
         print("AI ei liikkunut vaan hyökkäsi tällä vuorolla")
-    #else:
-        #print("Illegal move, please try again")
-        # loop to beginning
+
 
 
 
