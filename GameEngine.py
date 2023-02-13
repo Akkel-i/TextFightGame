@@ -49,7 +49,18 @@ def making_obstacles(amount):
                 break
         i += 1
 
-
+def start_menu():
+    print()
+    print("** Welcome to the world of gladiators **")
+    print()
+    print()
+    print()
+    print("* Start *")
+    print("* Help *")
+    print("* Quit *")
+    print()
+    player_input = input(" Choose what to do: ")
+    return player_input
 
 class bowman:
     character_movement = 1
@@ -757,30 +768,55 @@ kaikki_hahmot.append(bowman_RB)
 bowman_GB = bowman("bowman", "GB")
 kaikki_hahmot.append(bowman_GB)
 
-while r_id_win == False and g_id_win == False:
-    printing_the_world()
-    print(turn_counter)
-    if turn_counter % 2 == 1:
-        # ekan tiimin vuoro
-        print(f"Next character to move: {kaikki_hahmot[character_turn_counter].id}")
-        movement(kaikki_hahmot[character_turn_counter]) 
-        print("\n")
-
-        character_turn_counter += 1
-        if character_turn_counter > 3:
-            character_turn_counter = 0
-
-    if turn_counter % 2 == 0:
-        print(f"Tietokone koittaa liikuttaa: {kaikki_hahmot[character_turn_counter].id}")
-        computer_move(kaikki_hahmot[character_turn_counter])
-        print("\n")
-
+while True:
+    what_to_do = start_menu()
+    if what_to_do.upper() == "HELP":
+        print()
+        print("To move, please select:")
+        print("Q, W, E")
+        print("A,    D")
+        print("Z, X, C")
+        print()
+        print("Select 'B' to shoot an arrow")
+        what_to_do = start_menu()
+    if what_to_do.upper() == "START":
+        break
+    if what_to_do.upper() == "QUIT":
+        print()
+        print("* *")
+        print("Thank You for playing the game!")
+        print("* *")
+        print()
+        break
         
-        character_turn_counter += 1
-        if character_turn_counter > 3:
-            character_turn_counter = 0
-    turn_counter += 1
 
+if what_to_do.upper() == "START":
+    while r_id_win == False and g_id_win == False:
+        printing_the_world()
+        print(turn_counter)
+        if turn_counter % 2 == 1:
+            # ekan tiimin vuoro
+            print(f"Next character to move: {kaikki_hahmot[character_turn_counter].id}")
+            movement(kaikki_hahmot[character_turn_counter]) 
+            print("\n")
+
+            character_turn_counter += 1
+            if character_turn_counter > 3:
+                character_turn_counter = 0
+
+        if turn_counter % 2 == 0:
+            print(f"Tietokone koittaa liikuttaa: {kaikki_hahmot[character_turn_counter].id}")
+            computer_move(kaikki_hahmot[character_turn_counter])
+            print("\n")
+        
+            character_turn_counter += 1
+            if character_turn_counter > 3:
+                character_turn_counter = 0
+        turn_counter += 1
+
+
+    print(quit)
+    quit()
 
 
 if __name__ == '__main__':
