@@ -284,6 +284,40 @@ def deploy_character():
                     #    f"bowman_{x}".position = the_world[row][cell]
                     break
     
+def vicinity_check(hahmo):
+    character_close = False
+    current_position_row = hahmo.position[0]
+    current_position_column = hahmo.position[1]
+    if current_position_row != 0:
+        check_beginning_row = current_position_row - 1
+    else:
+        check_beginning_row = current_position_row
+    if current_position_column != 0:
+        check_beginning_column = current_position_column - 1
+    else:
+        check_beginning_column = current_position_column
+
+    if (check_beginning_row + 2) > 7:
+        limiter_row = 7
+    else:
+        limiter_row = check_beginning_row + 2
+    if (check_beginning_column + 2) > 7:
+        limiter_column = 7
+    else:
+        limiter_column = check_beginning_column + 2       
+
+    while check_beginning_row <= limiter_row and character_close == False:
+        while check_beginning_column <= limiter_column:
+            if the_world[check_beginning_row][check_beginning_column] == "RS":
+                character_close = True
+                return character_close
+            if the_world[check_beginning_row][check_beginning_column] == "RB":
+                character_close = True
+                return character_close
+            check_beginning_column += 1   
+        check_beginning_row += 1
+        check_beginning_column = limiter_column - 2 
+    return character_close
 
 def movement(hahmo):
     current_position_row = hahmo.position[0]
@@ -291,12 +325,17 @@ def movement(hahmo):
 
     # nuolet joka suuntaan näppäimillä: Q W E D C X Z A
     # pitää vielä chekata ettei mene kentän yli tai ali tai ei ole XX
+    is_enemy_adjacent = vicinity_check(hahmo)
     while True:
         player_movement_input = input("Choose where to move: ")
         if player_movement_input.upper() == "B":
             if hahmo.id == "GB":
-                player_ranged_attack(hahmo)
-                break 
+                if is_enemy_adjacent == False:
+                    player_ranged_attack(hahmo)
+                    break 
+                else:
+                    print("There is a enemy besides you, so hit him!")
+                    continue
             else:
                 print("You don't have a bow!")
                 continue
@@ -459,8 +498,7 @@ def movement(hahmo):
             print("You highfive yourself and continue")
 
 
-
-# chekki jos jokin ympäröivä ruutu on vihollinen
+# chekki jos jokin ympäröivä ruutu on vihollinen, ja hyökkää tai ampuu bowilla
 def computer_attack_check(hahmo):
     has_attacked = False
     current_position_row = hahmo.position[0]
@@ -508,6 +546,47 @@ def computer_attack_check(hahmo):
         check_beginning_column = limiter_column - 2 
     return has_attacked     
 
+def computer_ranged_attack(hahmo):
+    position_in_list = 0
+    osuma_listalta = 0
+    hit_chance_list = [1, 2, 3, 4, 5]
+    hit_chance = random.choice(hit_chance_list)
+    player_character_to_hit_list = ["GB", "GS"]
+    player_character_to_hit = random.choice(player_character_to_hit_list)
+
+    if hahmo.id == "RS":
+        return False
+    
+    while True:
+        if player_character_to_hit.upper() == "GS":
+            for character in kaikki_hahmot:
+                if player_character_to_hit in character.id:
+                    player_character_to_hit = kaikki_hahmot[position_in_list]
+                    osuma_listalta = position_in_list
+                    break
+                position_in_list += 1  
+            if hit_chance == 1 or hit_chance == 2:
+                print(f"The arrow flies, but {kaikki_hahmot[osuma_listalta].id} uses afterimage")
+            else:
+                print(f"{kaikki_hahmot[osuma_listalta].id} hahmon hp ennen: {kaikki_hahmot[osuma_listalta].character_hp}")
+                kaikki_hahmot[osuma_listalta].character_hp -= random.randint(1, 5)
+                print(f"{kaikki_hahmot[osuma_listalta].id} hahmon hp jälkeen: {kaikki_hahmot[osuma_listalta].character_hp}")
+            break
+        if player_character_to_hit.upper() == "GB":
+            for character in kaikki_hahmot:
+                if player_character_to_hit in character.id:
+                    player_character_to_hit = kaikki_hahmot[position_in_list]
+                    osuma_listalta = position_in_list
+                    break
+                position_in_list += 1  
+            if hit_chance == 1 or hit_chance == 2:
+                print(f"The arrow flies, but {kaikki_hahmot[osuma_listalta].id} uses afterimage")
+            else:
+                print(f"{kaikki_hahmot[osuma_listalta].id} hahmon hp ennen: {kaikki_hahmot[osuma_listalta].character_hp}")
+                kaikki_hahmot[osuma_listalta].character_hp -= random.randint(1, 5)
+                print(f"{kaikki_hahmot[osuma_listalta].id} hahmon hp jälkeen: {kaikki_hahmot[osuma_listalta].character_hp}")
+            break
+    return True
 
 
 def computer_move(hahmo):
@@ -515,15 +594,20 @@ def computer_move(hahmo):
     current_position_column = hahmo.position[1]
     movement_options_computer = ["Z", "X", "C"]
 
-
     #print(computer_movement_input)
     # nuolet joka suuntaan näppäimillä: Q W E D C X Z A
     # pitää vielä chekata ettei mene kentän yli tai ali
 
-    computer_attacked_this_turn = computer_attack_check(hahmo) # tähän hyökkäys chekki ennenkun liikkuu
-    print(f"Has computer attacked this turn? {computer_attacked_this_turn}")
+    computer_melee_attacked_this_turn = computer_attack_check(hahmo) # Melee hyökkäys ennen liikkumista
+    print(f"Has computer melee attacked this turn? {computer_melee_attacked_this_turn}")
 
-    if computer_attacked_this_turn == False:
+    if computer_melee_attacked_this_turn == False:
+        computer_range_attacked_this_turn = computer_ranged_attack(hahmo)
+        print(f"Has computer range attacked this turn? {computer_range_attacked_this_turn}")
+    else: 
+        computer_range_attacked_this_turn = False
+
+    if computer_melee_attacked_this_turn == False and computer_range_attacked_this_turn == False:
         while True:
             computer_movement_input = random.choice(movement_options_computer)
             if computer_movement_input == "Q":
@@ -621,8 +705,10 @@ def computer_move(hahmo):
                     print(f"Computer runs to a tree, my oh my")
                 if the_world[current_position_row][current_position_column-1] == "RS" or the_world[current_position_row][current_position_column-1] == "RB":
                     print("AI slaps it's teammate and continues")
-    if computer_attacked_this_turn == True:
-        print("AI ei liikkunut vaan hyökkäsi tällä vuorolla")
+    if computer_melee_attacked_this_turn == True:
+        print("AI ei liikkunut vaan melee hyökkäsi tällä vuorolla")
+    if computer_range_attacked_this_turn == True:
+        print("AI ei liikkunut vaan range hyökkäsi tällä vuorolla")
 
 
 
@@ -680,7 +766,6 @@ while r_id_win == False and g_id_win == False:
         movement(kaikki_hahmot[character_turn_counter]) 
         print("\n")
 
-        turn_counter += 1
         character_turn_counter += 1
         if character_turn_counter > 3:
             character_turn_counter = 0
@@ -690,10 +775,11 @@ while r_id_win == False and g_id_win == False:
         computer_move(kaikki_hahmot[character_turn_counter])
         print("\n")
 
-        turn_counter += 1
+        
         character_turn_counter += 1
         if character_turn_counter > 3:
             character_turn_counter = 0
+    turn_counter += 1
 
 
 
