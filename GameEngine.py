@@ -778,6 +778,10 @@ while True:
         print("Z, X, C")
         print()
         print("Select 'B' to shoot an arrow")
+        print()
+        print("RS = Red Swordman")
+        print("GB = Green Bowman")
+        print()
         what_to_do = start_menu()
     if what_to_do.upper() == "START":
         break
