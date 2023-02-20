@@ -13,9 +13,10 @@ the_world = [
     ]
 
 # muuta jokkoe listat sanakirjaksi missä avain on nimi? ja siitä sitten jaotellaan ja ylläpidetään
-r_id_character_list = [] # red team
-g_id_character_list = [] # green team
+r_id_character_list = [] # red team, tietokoneen joukkoe
+g_id_character_list = [] # green team, pelaajan joukkoe
 all_character_list = []
+all_character_list_alive = []
 r_id_win = False
 g_id_win = False
 turn_counter = 1
@@ -68,6 +69,7 @@ class bowman:
         self.name = name
         self.id = id # käytetään deploy kohdassa, R ja G
         self.position = ""
+        self.alive = True
         self.character_hp = random.randint(6, 10)
         self.character_mp = random.randint(0, 0)
         if self.id == "RB":
@@ -108,6 +110,7 @@ class swordman:
         self.name = name
         self.id = id # käytetään deploy kohdassa, R ja G
         self.position = ""
+        self.alive = True
         self.character_hp = random.randint(8, 15)
         self.character_mp = random.randint(0, 0)
         if self.id == "RS":
@@ -136,6 +139,48 @@ class swordman:
         self.character_melee_dmg = random.randint(2, 5)
         print("hello my name is " + self.name)
 
+def taking_damage_and_dying_check(character):
+    if character.character_hp <= 0:
+        character.alive = False
+        current_position_row = character.position[0]
+        current_position_column = character.position[1]
+        the_world[current_position_row][current_position_column] = "--"
+
+        #character.position = ""
+
+    return character.alive
+
+def alive_check(character):
+    if character.alive == True:
+        return True
+    else:
+        return False
+
+
+def game_winning_check_r():
+    global r_id_win
+    g_dead_score = 0
+    for character in kaikki_hahmot:
+        if character.id[0] == "G":
+            if character.alive == False:
+                g_dead_score += 1
+    if g_dead_score == 2:
+        r_id_win = True
+    return r_id_win
+
+def game_winning_check_g():
+    global g_id_win
+    r_dead_score = 0
+    for character in kaikki_hahmot:
+        if character.id[0] == "R":
+            if character.alive == False:
+                r_dead_score += 1
+    if r_dead_score == 2:
+        g_id_win = True
+    return g_id_win
+
+
+
 def enemy_melee_attack(enemy_hahmo, player_hahmo_id):
     print(f"{enemy_hahmo.name} is preparing for an attack ")
     player_character_to_get_hit = ""
@@ -158,6 +203,8 @@ def enemy_melee_attack(enemy_hahmo, player_hahmo_id):
             print(f"pelaajan hahmon hp ennen: {kaikki_hahmot[osuma_listalta].character_hp}")
             kaikki_hahmot[osuma_listalta].character_hp -= random.randint(2, 5)
             print(f"pelaajan hahmon hp jälkeen: {kaikki_hahmot[osuma_listalta].character_hp}")
+            taking_damage_and_dying_check(kaikki_hahmot[osuma_listalta])
+            alive_check(kaikki_hahmot[osuma_listalta])
     if enemy_hahmo.id == "RB":
         if hit_chance == 1:
             print(f"So close, but {player_character_to_get_hit.id} dodges gracefully")
@@ -165,6 +212,8 @@ def enemy_melee_attack(enemy_hahmo, player_hahmo_id):
             print(f"pelaajan hahmon hp ennen: {kaikki_hahmot[osuma_listalta].character_hp}")
             kaikki_hahmot[osuma_listalta].character_hp -= random.randint(1, 1)
             print(f"pelaajan hahmon hp jälkeen: {kaikki_hahmot[osuma_listalta].character_hp}")
+            taking_damage_and_dying_check(kaikki_hahmot[osuma_listalta])
+            alive_check(kaikki_hahmot[osuma_listalta])
     #JEE TOIMII, vähentää pelaajan hp :D ja 20% dodge chance tällähetkellä
 
 def player_melee_attack(player_hahmo_og, enemy_hahmo_id):
@@ -189,6 +238,8 @@ def player_melee_attack(player_hahmo_og, enemy_hahmo_id):
             print(f"tietokoneen hahmon hp ennen: {kaikki_hahmot[osuma_listalta].character_hp}")
             kaikki_hahmot[osuma_listalta].character_hp -= random.randint(2, 5)
             print(f"tietokoneen hahmon hp jälkeen: {kaikki_hahmot[osuma_listalta].character_hp}")
+            taking_damage_and_dying_check(kaikki_hahmot[osuma_listalta])
+            alive_check(kaikki_hahmot[osuma_listalta])
     if player_hahmo_og.id == "GB":
         if hit_chance == 1:
             print(f"So close, but {enemy_character_to_get_hit.id} dodges by fumbling to the ground face first")
@@ -196,6 +247,8 @@ def player_melee_attack(player_hahmo_og, enemy_hahmo_id):
             print(f"tietokoneen hahmon hp ennen: {kaikki_hahmot[osuma_listalta].character_hp}")
             kaikki_hahmot[osuma_listalta].character_hp -= random.randint(1, 1)
             print(f"tietokoneen hahmon hp jälkeen: {kaikki_hahmot[osuma_listalta].character_hp}")
+            taking_damage_and_dying_check(kaikki_hahmot[osuma_listalta])
+            alive_check(kaikki_hahmot[osuma_listalta])
 
 def player_ranged_attack(player_hahmo_og):
     enemy_character_to_get_hit = ""
@@ -219,6 +272,8 @@ def player_ranged_attack(player_hahmo_og):
                 print(f"tietokoneen hahmon hp ennen: {kaikki_hahmot[osuma_listalta].character_hp}")
                 kaikki_hahmot[osuma_listalta].character_hp -= random.randint(1, 5)
                 print(f"tietokoneen hahmon hp jälkeen: {kaikki_hahmot[osuma_listalta].character_hp}")
+                taking_damage_and_dying_check(kaikki_hahmot[osuma_listalta])
+            alive_check(kaikki_hahmot[osuma_listalta])
             break
         if enemy_to_take_damage_input.upper() == "RB":
             for character in kaikki_hahmot:
@@ -233,6 +288,8 @@ def player_ranged_attack(player_hahmo_og):
                 print(f"tietokoneen hahmon hp ennen: {kaikki_hahmot[osuma_listalta].character_hp}")
                 kaikki_hahmot[osuma_listalta].character_hp -= random.randint(1, 5)
                 print(f"tietokoneen hahmon hp jälkeen: {kaikki_hahmot[osuma_listalta].character_hp}")
+                taking_damage_and_dying_check(kaikki_hahmot[osuma_listalta])
+                alive_check(kaikki_hahmot[osuma_listalta])
             break
         else:
             print("Beep Try again!")
@@ -245,7 +302,7 @@ def create_characters():
     bowman_RB = bowman("bowman", "RB")
     bowman_GB = bowman("bowman", "GB")
 
-# funktio mikä sijoittaa ukkelit kartalle riippuen kumpi joukkoe. Tällä hetkellä deploy on classissa jo mukana
+# funktio mikä sijoittaa ukkelit kartalle riippuen kumpi joukkoe. Tällä hetkellä deploy on classissa jo mukana-. Nyt tämä ei ole käytössä
 def deploy_character():
     # R joukkoe ylös, G joukkoe alas
     for x in r_id_character_list:
@@ -337,6 +394,8 @@ def movement(hahmo):
     # nuolet joka suuntaan näppäimillä: Q W E D C X Z A
     # pitää vielä chekata ettei mene kentän yli tai ali tai ei ole XX
     is_enemy_adjacent = vicinity_check(hahmo)
+    if alive_check(hahmo) == False:
+        return
     while True:
         player_movement_input = input("Choose where to move: ")
         if player_movement_input.upper() == "B":
@@ -368,9 +427,7 @@ def movement(hahmo):
             if the_world[current_position_row-1][current_position_column-1] == "XX":
                 print(f"Illegal move, please try again")
             if the_world[current_position_row-1][current_position_column-1] == "GS" or the_world[current_position_row-1][current_position_column-1] == "GB":
-                print("You hug your teammate and continue")
-
-                
+                print("You hug your teammate and continue")              
 
         if player_movement_input.upper() == "W":
             if the_world[current_position_row-1][current_position_column] == "RS":
@@ -531,8 +588,8 @@ def computer_attack_check(hahmo):
         limiter_column = 7
     else:
         limiter_column = check_beginning_column + 2       
-    print(check_beginning_row)
-    print(check_beginning_column)
+    #print(check_beginning_row)
+    #print(check_beginning_column)
 
     # tähän saa loopin mikä chekkaa onko mikään ympäröivistä vihollinen . TOIMII muuten paitsi jos ukkeli on 0 tai 7 rivillä nii käy koko loopin läpi
     while check_beginning_row <= limiter_row and has_attacked == False:
@@ -551,7 +608,7 @@ def computer_attack_check(hahmo):
                 has_attacked = True
                 print("AI hyökkäsi ihmisen kimppuun!")
                 break
-            print(f"{check_beginning_row}, {check_beginning_column}")
+            #print(f"{check_beginning_row}, {check_beginning_column}")
             check_beginning_column += 1   
         check_beginning_row += 1
         check_beginning_column = limiter_column - 2 
@@ -562,13 +619,14 @@ def computer_ranged_attack(hahmo):
     osuma_listalta = 0
     hit_chance_list = [1, 2, 3, 4, 5]
     hit_chance = random.choice(hit_chance_list)
+
+    # TÄHÄN KUOLLEEN HAHMON TARKISTUS ETTEI AMMU JO KUOLLUTTA
     player_character_to_hit_list = ["GB", "GS"]
     player_character_to_hit = random.choice(player_character_to_hit_list)
 
-    if hahmo.id == "RS":
-        return False
     
     while True:
+        print(f"The enemy is getting ready to shoot an arrow!")
         if player_character_to_hit.upper() == "GS":
             for character in kaikki_hahmot:
                 if player_character_to_hit in character.id:
@@ -582,6 +640,8 @@ def computer_ranged_attack(hahmo):
                 print(f"{kaikki_hahmot[osuma_listalta].id} hahmon hp ennen: {kaikki_hahmot[osuma_listalta].character_hp}")
                 kaikki_hahmot[osuma_listalta].character_hp -= random.randint(1, 5)
                 print(f"{kaikki_hahmot[osuma_listalta].id} hahmon hp jälkeen: {kaikki_hahmot[osuma_listalta].character_hp}")
+                taking_damage_and_dying_check(kaikki_hahmot[osuma_listalta])
+                alive_check(kaikki_hahmot[osuma_listalta])
             break
         if player_character_to_hit.upper() == "GB":
             for character in kaikki_hahmot:
@@ -596,6 +656,8 @@ def computer_ranged_attack(hahmo):
                 print(f"{kaikki_hahmot[osuma_listalta].id} hahmon hp ennen: {kaikki_hahmot[osuma_listalta].character_hp}")
                 kaikki_hahmot[osuma_listalta].character_hp -= random.randint(1, 5)
                 print(f"{kaikki_hahmot[osuma_listalta].id} hahmon hp jälkeen: {kaikki_hahmot[osuma_listalta].character_hp}")
+                taking_damage_and_dying_check(kaikki_hahmot[osuma_listalta])
+                alive_check(kaikki_hahmot[osuma_listalta])
             break
     return True
 
@@ -609,12 +671,15 @@ def computer_move(hahmo):
     # nuolet joka suuntaan näppäimillä: Q W E D C X Z A
     # pitää vielä chekata ettei mene kentän yli tai ali
 
+    if alive_check(hahmo) == False:
+        return
+
     computer_melee_attacked_this_turn = computer_attack_check(hahmo) # Melee hyökkäys ennen liikkumista
-    print(f"Has computer melee attacked this turn? {computer_melee_attacked_this_turn}")
+    #print(f"Has computer melee attacked this turn? {computer_melee_attacked_this_turn}")
 
     if computer_melee_attacked_this_turn == False:
         computer_range_attacked_this_turn = computer_ranged_attack(hahmo)
-        print(f"Has computer range attacked this turn? {computer_range_attacked_this_turn}")
+        #print(f"Has computer range attacked this turn? {computer_range_attacked_this_turn}")
     else: 
         computer_range_attacked_this_turn = False
 
@@ -626,7 +691,7 @@ def computer_move(hahmo):
                     the_world[current_position_row-1][current_position_column-1] = hahmo.id
                     hahmo.position = (current_position_row-1, current_position_column-1)
                     the_world[current_position_row][current_position_column] = "--"
-                    print("tietokone liikkui : Q")
+                    #print("tietokone liikkui : Q")
                     break
                 if the_world[current_position_row-1][current_position_column-1] == "XX":
                     print(f"Computer runs to a tree, my oh my")
@@ -638,7 +703,7 @@ def computer_move(hahmo):
                     the_world[current_position_row-1][current_position_column] = hahmo.id
                     hahmo.position = (current_position_row-1, current_position_column)
                     the_world[current_position_row][current_position_column] = "--"
-                    print("tietokone liikkui : W")
+                    #print("tietokone liikkui : W")
                     break
                 if the_world[current_position_row-1][current_position_column] == "XX":
                     print(f"Computer runs to a tree, my oh my")
@@ -650,7 +715,7 @@ def computer_move(hahmo):
                     the_world[current_position_row-1][current_position_column+1] = hahmo.id
                     hahmo.position = (current_position_row-1, current_position_column+1)
                     the_world[current_position_row][current_position_column] = "--"
-                    print("tietokone liikkui : E")
+                    #print("tietokone liikkui : E")
                     break
                 if the_world[current_position_row-1][current_position_column+1] == "XX":
                     print(f"Computer runs to a tree, my oh my")
@@ -662,7 +727,7 @@ def computer_move(hahmo):
                     the_world[current_position_row][current_position_column+1] = hahmo.id
                     hahmo.position = (current_position_row, current_position_column+1)
                     the_world[current_position_row][current_position_column] = "--"
-                    print("tietokone liikkui : D")
+                    #print("tietokone liikkui : D")
                     break
                 if the_world[current_position_row][current_position_column+1] == "XX":
                     print(f"Computer runs to a tree, my oh my")
@@ -674,7 +739,7 @@ def computer_move(hahmo):
                     the_world[current_position_row+1][current_position_column+1] = hahmo.id
                     hahmo.position = (current_position_row+1, current_position_column+1)
                     the_world[current_position_row][current_position_column] = "--"
-                    print("tietokone liikkui : C")
+                    #print("tietokone liikkui : C")
                     break
                 if the_world[current_position_row+1][current_position_column+1] == "XX":
                     print(f"Computer runs to a tree, my oh my")
@@ -686,7 +751,7 @@ def computer_move(hahmo):
                     the_world[current_position_row+1][current_position_column] = hahmo.id
                     hahmo.position = (current_position_row+1, current_position_column)
                     the_world[current_position_row][current_position_column] = "--"
-                    print("tietokone liikkui : X")
+                    #print("tietokone liikkui : X")
                     break
                 if the_world[current_position_row+1][current_position_column] == "XX":
                     print(f"Computer runs to a tree, my oh my")
@@ -698,7 +763,7 @@ def computer_move(hahmo):
                     the_world[current_position_row+1][current_position_column-1] = hahmo.id
                     hahmo.position = (current_position_row+1, current_position_column-1)
                     the_world[current_position_row][current_position_column] = "--"
-                    print("tietokone liikkui : Z")
+                    #print("tietokone liikkui : Z")
                     break
                 if the_world[current_position_row+1][current_position_column-1] == "XX":
                     print(f"Computer runs to a tree, my oh my")
@@ -710,16 +775,18 @@ def computer_move(hahmo):
                     the_world[current_position_row][current_position_column-1] = hahmo.id
                     hahmo.position = (current_position_row, current_position_column-1)
                     the_world[current_position_row][current_position_column] = "--"
-                    print("tietokone liikkui : A")
+                    #print("tietokone liikkui : A")
                     break
                 if the_world[current_position_row][current_position_column-1] == "XX":
                     print(f"Computer runs to a tree, my oh my")
                 if the_world[current_position_row][current_position_column-1] == "RS" or the_world[current_position_row][current_position_column-1] == "RB":
                     print("AI slaps it's teammate and continues")
     if computer_melee_attacked_this_turn == True:
-        print("AI ei liikkunut vaan melee hyökkäsi tällä vuorolla")
+        #print("AI ei liikkunut vaan melee hyökkäsi tällä vuorolla")
+        pass
     if computer_range_attacked_this_turn == True:
-        print("AI ei liikkunut vaan range hyökkäsi tällä vuorolla")
+        pass
+        #print("AI ei liikkunut vaan range hyökkäsi tällä vuorolla")
 
 
 
@@ -757,6 +824,7 @@ def testi():
 
 making_obstacles(2)
 kaikki_hahmot = []
+kaikki_hahmot_alive = []
 turn_counter = 0
 character_turn_counter = 0
 swordman_RS = swordman("swordman", "RS")
@@ -796,13 +864,19 @@ while True:
 
 if what_to_do.upper() == "START":
     while r_id_win == False and g_id_win == False:
+        g_id_win = game_winning_check_g()
+        r_id_win = game_winning_check_r()
         printing_the_world()
-        print(turn_counter)
+        print(f"Vuoro numero: {turn_counter}")
         if turn_counter % 2 == 1:
             # ekan tiimin vuoro
             print(f"Next character to move: {kaikki_hahmot[character_turn_counter].id}")
-            movement(kaikki_hahmot[character_turn_counter]) 
-            print("\n")
+            if alive_check(kaikki_hahmot[character_turn_counter]) == True:
+                movement(kaikki_hahmot[character_turn_counter]) 
+            if alive_check(kaikki_hahmot[character_turn_counter]) == False:
+                #print(f"{kaikki_hahmot[character_turn_counter.id]} on kuollut")
+                pass
+                print("\n")
 
             character_turn_counter += 1
             if character_turn_counter > 3:
@@ -810,18 +884,35 @@ if what_to_do.upper() == "START":
 
         if turn_counter % 2 == 0:
             print(f"Tietokone koittaa liikuttaa: {kaikki_hahmot[character_turn_counter].id}")
-            computer_move(kaikki_hahmot[character_turn_counter])
-            print("\n")
+            if alive_check(kaikki_hahmot[character_turn_counter]) == True:
+                computer_move(kaikki_hahmot[character_turn_counter])
+                print("\n")
+            if alive_check(kaikki_hahmot[character_turn_counter]) == False:
+                #print(f"{kaikki_hahmot[character_turn_counter.id]} on kuollut")
+                pass
         
             character_turn_counter += 1
             if character_turn_counter > 3:
                 character_turn_counter = 0
         turn_counter += 1
 
-
+if what_to_do.upper() == "quit":
     print(quit)
     quit()
 
+if g_id_win == True:
+    print("**************************************")
+    print()
+    print("The Green team has won the tournament!")
+    print()
+    print("**************************************")
+
+if r_id_win == True:
+    print("**************************************")
+    print()
+    print("The Red team has won the tournament!")
+    print()
+    print("**************************************")
 
 if __name__ == '__main__':
     #printing_the_world()
