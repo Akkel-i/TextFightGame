@@ -621,7 +621,7 @@ def computer_ranged_attack(hahmo):
     hit_chance = random.choice(hit_chance_list)
     target_to_shoot = False
 
-    # TÄHÄN KUOLLEEN HAHMON TARKISTUS ETTEI AMMU JO KUOLLUTTA
+    # TÄHÄN KUOLLEEN HAHMON TARKISTUS ETTEI AMMU JO KUOLLUTTA / ehkä toimii nytte juu
     while target_to_shoot != True:
         player_character_to_hit_list = ["GB", "GS"]
         player_character_to_hit_alive_check = random.choice(player_character_to_hit_list)
@@ -945,4 +945,4 @@ if __name__ == '__main__':
     pass
 
 
-# position lisäys pitää lisätä ja bugit siitä pois.
+# vihollinen ei kuole jos ampuu, mutta kuolee jos lyö, miksi?
