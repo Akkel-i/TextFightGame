@@ -273,7 +273,7 @@ def player_ranged_attack(player_hahmo_og):
                 kaikki_hahmot[osuma_listalta].character_hp -= random.randint(1, 5)
                 print(f"tietokoneen hahmon hp jälkeen: {kaikki_hahmot[osuma_listalta].character_hp}")
                 taking_damage_and_dying_check(kaikki_hahmot[osuma_listalta])
-            alive_check(kaikki_hahmot[osuma_listalta])
+                alive_check(kaikki_hahmot[osuma_listalta])
             break
         if enemy_to_take_damage_input.upper() == "RB":
             for character in kaikki_hahmot:
@@ -619,14 +619,23 @@ def computer_ranged_attack(hahmo):
     osuma_listalta = 0
     hit_chance_list = [1, 2, 3, 4, 5]
     hit_chance = random.choice(hit_chance_list)
+    target_to_shoot = False
 
     # TÄHÄN KUOLLEEN HAHMON TARKISTUS ETTEI AMMU JO KUOLLUTTA
-    player_character_to_hit_list = ["GB", "GS"]
-    player_character_to_hit = random.choice(player_character_to_hit_list)
+    while target_to_shoot != True:
+        player_character_to_hit_list = ["GB", "GS"]
+        player_character_to_hit_alive_check = random.choice(player_character_to_hit_list)
 
-    
+        for x in kaikki_hahmot:
+            if player_character_to_hit_alive_check in x.id:
+                if x.alive == True:
+                    player_character_to_hit = player_character_to_hit_alive_check
+                    target_to_shoot = True
+                    break
+
+    print(f"The enemy is getting ready to shoot an arrow!")
+
     while True:
-        print(f"The enemy is getting ready to shoot an arrow!")
         if player_character_to_hit.upper() == "GS":
             for character in kaikki_hahmot:
                 if player_character_to_hit in character.id:
@@ -643,6 +652,7 @@ def computer_ranged_attack(hahmo):
                 taking_damage_and_dying_check(kaikki_hahmot[osuma_listalta])
                 alive_check(kaikki_hahmot[osuma_listalta])
             break
+
         if player_character_to_hit.upper() == "GB":
             for character in kaikki_hahmot:
                 if player_character_to_hit in character.id:
@@ -673,12 +683,17 @@ def computer_move(hahmo):
 
     if alive_check(hahmo) == False:
         return
+    if taking_damage_and_dying_check == False:
+        return
 
     computer_melee_attacked_this_turn = computer_attack_check(hahmo) # Melee hyökkäys ennen liikkumista
     #print(f"Has computer melee attacked this turn? {computer_melee_attacked_this_turn}")
 
     if computer_melee_attacked_this_turn == False:
-        computer_range_attacked_this_turn = computer_ranged_attack(hahmo)
+        if hahmo.id == "RB":
+            computer_range_attacked_this_turn = computer_ranged_attack(hahmo)
+        if hahmo.id == "RS":
+            computer_range_attacked_this_turn = False
         #print(f"Has computer range attacked this turn? {computer_range_attacked_this_turn}")
     else: 
         computer_range_attacked_this_turn = False
